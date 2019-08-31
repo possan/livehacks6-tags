@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <style>
+            body {
+                background-color: #fff;
+                padding: 50px;
+                font-size: 10pt;
+            }
+        </style>
+        <script>
+            window.addEventListener('load', () => {
+
+                if (stagecast) {
+
+                    function clickTag(id) {
+                        console.log('clickTag', id)
+                        // ws.send(JSON.stringify({
+                        //     type: 'toggle-tag',
+                        // }));
+                    }
+
+                    function renderList() {
+                    }
+
+                    const eventId = stagecast.getEventId();
+                    const token = stagecast.getToken();
+                    const ws = new WebSocket('wss://stagecast.se/api/events/' + eventId + '/ws');
+
+                    document.getElementById('lastmessage').value = eventId;
+
+                    ws.onopen = (e) => {
+                        ws.send(JSON.stringify({'token': token}));
+                    }
+
+                    ws.onmessage = (e) => {
+                        document.getElementById('lastmessage').value = JSON.stringify(e.data);
+                    }
+
+                    document.getElementById('add').addEventListener('click', () => {
+                        ws.send(JSON.stringify({
+                            type: 'add-tag',
+                            text: document.getElementById('tag').value,
+                        }));
+                        document.getElementById('tag').value = '';
+                    });
+
+                    document.getElementById('flash').addEventListener('click', () => {
+                        ws.send(JSON.stringify({
+                            type: 'flash',
+                        }));
+                    });
+                }
+            })
+        </script>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    </head>
+    <body>
+        <h1>Dummy</h1>
+        <p>
+            <ul id="taglist">
+                <li><a href="#">TAG 1</a></li>
+                <li class="selected"><a href="#">TAG 2</a></li>
+                <li><a href="#">TAG 3</a></li>
+                <li class="selected"><a href="#">TAG 4</a></li>
+                <li><a href="#">TAG 5</a></li>
+                <li><a href="#">TAG 6</a></li>
+                <li><a href="#">TAG 7</a></li>
+            </ul>
+        </p>
+        <p>
+            <input type="text" id="tag" />
+            <button id="add">ADD</button>
+        </p>
+        <p>
+            <button id="flash">FLASH</button>
+        </p>
+        <p>
+            <textarea id="lastmessage" rows="20" cols="40"></textarea>
+        </p>
+    </body>
+</html>
