@@ -1,81 +1,500 @@
-<html>
-    <head>
-        <style>
-            body {
-                background-color: #fff;
-                padding: 50px;
-                font-size: 10pt;
-            }
-        </style>
-        <script>
-            window.addEventListener('load', () => {
+    <html>
+        <head>
+            <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+            <style type="text/css">
+                body {
+                    background-color: #212121;
+                    color: #fff;
+                    padding: 0;
+                    margin: 0;
+                    font-size: 10pt;
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 25px;
+                    line-height: 40px;
+                    font-weight: 200;
+                    text-rendering: optimizeLegibility;
+                }
 
-                if (stagecast) {
+                h1 {
+                    font-size: 36px;
+                    line-height: 50px;
+                    margin-top: 80px;
+                    margin-left: 40px;
+                    margin-right: 40px;
+                    font-weight: 600;
+                }
 
-                    function clickTag(id) {
+                h3 {
+                    margin-top: 80px;
+                    font-size: 25px;
+                    line-height: 40px;
+                }
+
+                ul {
+                    display: block;
+                    list-style: none;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                ul li {
+                    display: inline-block;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                ul li.selected {
+                    background-color: #fff;
+                    color: #000;
+                }
+
+                div#add {
+                    margin: 20px 0;
+                }
+
+                div#add input {
+                    background-color: #fff;
+                    border: 0;
+                    outline: none;
+                    font-size: 24px;
+                    line-height: 43px;
+                    font-family: 'Poppins', sans-serif;
+                    line-height: 40px;
+                    font-weight: 400;
+                    max-width: 250px;
+                    text-align: center;
+                    border-radius: 100px;
+                }
+
+                #visuals {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                }
+
+                #visuals > div {
+                    display: none;
+                }
+
+                #visuals > div > img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    object-position: center center;
+                }
+
+                #visuals > div.visible {
+                    display: block;
+                }
+
+                #controls {
+                    position: absolute;
+                    width: 100%;
+                    bottom: 100px;
+                }
+
+                #controls div.inner {
+                    background-color: rgba(255,255,255,0.8);
+                }
+
+                .screen {
+                    display: none;
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                }
+
+                .screen.visible {
+                    display: block;
+                }
+
+                #tagscreen {
+                    color: #F3FFAB;
+                    text-align: center;
+                }
+
+                #tagscreen ul li {
+                    display: inline-block;
+                    margin: 5px;
+                    border-radius: 100px;
+                    font-weight: 400;
+                    color: #000;
+                    background-color: #eee;
+                }
+
+                #tagscreen ul li.color0 {
+                    background-color: #fcc;
+                }
+
+                #tagscreen ul li.color1 {
+                    background-color: #ffc;
+                }
+
+                #tagscreen ul li.color2 {
+                    background-color: #cfc;
+                }
+
+                #tagscreen ul li.color3 {
+                    background-color: #cff;
+                }
+
+                #tagscreen ul li.color4 {
+                    background-color: #ccf;
+                }
+
+                #tagscreen ul li.selected {
+                    background-color: #fff;
+                    color: #000;
+                }
+
+                #tagscreen ul li span {
+                    padding: 5px 20px;
+                    position: relative;
+                    display: inline-block;
+                }
+
+                #tagscreen ul li span a {
+                    position: relative;
+                    cursor: pointer;
+                    display: inline-block;
+                    margin: 0;
+                    max-width: 300px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                #tagscreen ul li span em {
+                    background-color: #e43;
+                    color: #fff;
+                    display: inline-block;
+                    text-align: center;
+                    min-width: 30px;
+                    min-height: 30px;
+                    position: absolute;
+                    right: -10px;
+                    padding: 0px 2px;
+                    font-style: normal;
+                    margin: 0;
+                    border-radius: 100px;
+                    top: -6px;
+                    font-size: 16px;
+                    line-height: 32px;
+                }
+
+                #searchscreen {
+                    text-align: center;
+                    position: relative;
+                    background-color: #000;
+                }
+
+                #searchscreen h1 {
+                    color: #fff;
+                    font-weight: 600;
+                }
+
+                #locatingoverlay {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    display: none;
+                    color: #fff;
+                }
+
+                .visible#locatingoverlay {
+                    display: block;
+                }
+
+                #matchoverlay {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    display: none;
+                    color: #fff;
+                }
+
+                .visible#matchoverlay {
+                    display: block;
+                }
+
+                .bottombuttons {
+                    position: absolute;
+                    margin: 0 auto;
+                    bottom: 50px;
+                    width: 100%;
+                }
+
+                #backtolist {
+                    background-color: transparent;
+                    border: 3px solid #fff;
+                    color: #fff;
+                    padding: 10px 20px;
+                    border-radius: 100px;
+                    font-size: 22px;
+                    line-height: 30px;
+                    font-weight: 400;
+                    color: #fff;
+                    z-index: 100;
+                }
+
+                #tagoverlay {
+                    position: absolute;
+                    top: 40%;
+                    display: flex;
+                    height: 20%;
+                    width: 100%;
+                    color: #000;
+                    font-size: 36px;
+                    line-height: 42px;
+                    font-weight: 600;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                #tagoverlay span {
+                    flex: 1;
+                }
+
+            </style>
+            <script>
+                window.addEventListener('load', () => {
+
+                    const eventId = typeof(stagecast) !== 'undefined' && stagecast.getEventId() || 'AB91BC33-D3E5-4746-9E98-EACA63421316';
+                    const token = typeof(stagecast) !== 'undefined' && stagecast.getToken() || 'token1';
+                    const userId = typeof(stagecast) !== 'undefined' && stagecast.getUserId() || 'userid1';
+
+                    var currentTag = '';
+                    var currentColor = 0;
+                    var numMatches = 0;
+                    var tagList = [
+                        {
+                            tag: 'First tag',
+                            color: 1,
+                        }, {
+                            tag: 'areallylongandannoyingtagthatwillbreaktheborders',
+                            color: 1,
+                        }, {
+                            tag: 'Second tag',
+                            color: 2,
+                            users: ['a', 'b', 'c']
+                        }
+                    ];
+
+                    function send(obj) {
+                        var payload = JSON.stringify(obj);
+                        console.log('Sending ' + payload);
+                        ws.send(payload);
+                    }
+
+                    function showTagList() {
+                        document.getElementById('tagscreen').className = 'screen visible';
+                        document.getElementById('searchscreen').className = 'screen hidden';
+                    }
+
+                    var DEFAULT_TAGS = [
+                        'https://media.giphy.com/media/lopgyWxwfJp2sutJCq/source.gif',
+                        'https://media.giphy.com/media/jqwX6kne6sHSbNkJlD/source.gif',
+                        'https://media.giphy.com/media/RM4tsUIK5d7OSuVhOX/source.gif',
+                        'https://media.giphy.com/media/KyTEkJkpVYj1VVCcWl/source.gif',
+                        'https://media.giphy.com/media/ZXwg0XhIxILie7PLr0/source.gif',
+                    ];
+
+                    var SPECIAL_TAGS = {
+                        'laser': 'https://media.giphy.com/media/XaLnoepP2IwFnUXdvb/source.gif',
+                        'pugs': 'https://media.giphy.com/media/dTJd5ygpxkzWo/giphy.gif',
+                        'tetrahedrons': 'https://media.giphy.com/media/6CZNutFOVjUDS/source.gif',
+                        'boris': 'https://media.giphy.com/media/oDyemGkavqIec/source.gif',
+                        'brexit': 'https://media.giphy.com/media/oDyemGkavqIec/source.gif',
+                    }
+
+                    function updateMatchCount() {
+                        numMatches = 0;
+                        tagList.forEach(t => {
+                            if (t && t.tag === currentTag) {
+                                numMatches = t.users && t.users.length;
+                            }
+                        })
+                        console.log('numMatches', numMatches)
+
+                        document.getElementById('matches').textContent = '' + numMatches;
+
+                        document.getElementById('locatingoverlay').className = numMatches < 2 ? 'visible' : '';
+                        document.getElementById('matchoverlay').className = numMatches > 1 ? 'visible' : '';
+
+                        document.getElementById('vis1').className = (numMatches > 1) ? 'visible' : '';
+                        let url = DEFAULT_TAGS[currentColor % DEFAULT_TAGS.length];
+                        if (currentTag.toLowerCase() in SPECIAL_TAGS) {
+                            url = SPECIAL_TAGS[currentTag.toLowerCase()];
+                        }
+                        document.getElementById('visimage').src = url;
+
+                    }
+
+                    function showSearchScreen(id) {
+                        currentTag = id;
+                        currentColor = 0;
+                        tagList.forEach(t => {
+                            if (t.tag === id) {
+                                currentColor = (t.color - 1) % 5;
+                            }
+                        });
+                        document.getElementById('tagscreen').className = 'screen hidden';
+                        document.getElementById('searchscreen').className = 'screen visible';
+                        document.getElementById('currenttag').textContent = id;
+                        document.getElementById('currenttag3').textContent = id;
+
+                        updateMatchCount();
+                    }
+
+                    function toggleTag(id) {
                         console.log('clickTag', id)
-                        // ws.send(JSON.stringify({
-                        //     type: 'toggle-tag',
-                        // }));
+                        send({
+                            type: 'select-tag',
+                            tag: id,
+                            user: userId,
+                        });
+                        showSearchScreen(id);
                     }
 
-                    function renderList() {
+                    function renderTagList() {
+                        var el = document.getElementById('taglist');
+
+                        el.innerHTML = '';
+
+                        tagList.forEach(tag => {
+                            var d = document.createElement('li');
+                            var s = document.createElement('span');
+                            var a = document.createElement('a');
+                            d.className = 'color' + ((tag.color - 1) % 5);
+                            if (tag.users && tag.users.indexOf(userId) !== -1) {
+                                d.className += ' selected';
+                            }
+                            a.textContent = tag.tag;
+                            a.dataset.id = tag.tag;
+                            s.appendChild(a);
+                            if (tag.users && tag.users.length > 0) {
+                                var b = document.createElement('em');
+                                b.textContent = '' + tag.users.length;
+                                s.appendChild(b)
+                            }
+                            d.appendChild(s)
+                            el.appendChild(d)
+                        });
                     }
 
-                    const eventId = stagecast.getEventId();
-                    const token = stagecast.getToken();
                     const ws = new WebSocket('wss://stagecast.se/api/events/' + eventId + '/ws');
 
-                    document.getElementById('lastmessage').value = eventId;
+                    document.getElementById('taglist').addEventListener('click', e => {
+                        toggleTag(e.target.dataset.id);
+                    });
 
                     ws.onopen = (e) => {
-                        ws.send(JSON.stringify({'token': token}));
+                        if (typeof(stagecast) !== 'undefined') {
+                            send({'token': token});
+                        } else {
+                            send({"email": "po@spotify.com", "password": "EventPassword1234"});
+                        }
+                        send({'type': 'get-tags', 'user': userId});
+                    }
+
+                    function runStep(beat) {
+                        // var tagswithusers = tagList.filter(t => t.users && t.users.length >= 2);
+                        // var tag = tagswithusers.length > 0 ? tagswithusers[beat % tagswithusers.length] : null;
+                        // var flash = tag && tag.users.indexOf(userId) !== -1;
+                        // console.log('beat', beat, tagswithusers, tag, flash);
+                        // var idx = beat % 2;
+                        // document.getElementById('vis1').className = (idx == 0 && flash) ? 'visible' : '';
+                        // document.getElementById('vis2').className = (idx == 1 && flash) ? 'visible' : '';
                     }
 
                     ws.onmessage = (e) => {
-                        document.getElementById('lastmessage').value = JSON.stringify(e.data);
+                        try {
+                            const data = JSON.parse(e.data);
+                            console.log('data', data);
+                            if (data.type === 'tagslist') {
+                                if (data.tagList) {
+                                    tagList = data.tagList;
+                                }
+                                renderTagList();
+                            }
+                            if (data.type === 'clock') {
+                                runStep(data.beat);
+                            }
+                        } catch(e) {
+                        }
+                        updateMatchCount();
                     }
 
-                    document.getElementById('add').addEventListener('click', () => {
-                        ws.send(JSON.stringify({
-                            type: 'add-tag',
-                            text: document.getElementById('tag').value,
-                        }));
-                        document.getElementById('tag').value = '';
+                    document.getElementById('backtolist').addEventListener('click', () => {
+                        send({
+                            type: 'deselect-tag',
+                            tag: currentTag,
+                            user: userId,
+                        });
+                        showTagList();
                     });
 
-                    document.getElementById('flash').addEventListener('click', () => {
-                        ws.send(JSON.stringify({
-                            type: 'flash',
-                        }));
+
+                    document.getElementById('tag').addEventListener('keydown', e => {
+                        if (e.keyCode === 13) {
+                            console.log('submit tag');
+                            var tag = document.getElementById('tag').value.trim();
+                            if (tag) {
+                                send({
+                                    type: 'add-tag',
+                                    tag: tag,
+                                    user: userId,
+                                });
+                                showSearchScreen(tag);
+                                document.getElementById('tag').value = '';
+                            }
+                        }
                     });
-                }
-            })
-        </script>
-        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-    </head>
-    <body>
-        <h1>Dummy</h1>
-        <p>
-            <ul id="taglist">
-                <li><a href="#">TAG 1</a></li>
-                <li class="selected"><a href="#">TAG 2</a></li>
-                <li><a href="#">TAG 3</a></li>
-                <li class="selected"><a href="#">TAG 4</a></li>
-                <li><a href="#">TAG 5</a></li>
-                <li><a href="#">TAG 6</a></li>
-                <li><a href="#">TAG 7</a></li>
-            </ul>
-        </p>
-        <p>
-            <input type="text" id="tag" />
-            <button id="add">ADD</button>
-        </p>
-        <p>
-            <button id="flash">FLASH</button>
-        </p>
-        <p>
-            <textarea id="lastmessage" rows="20" cols="40"></textarea>
-        </p>
-    </body>
-</html>
+
+                    renderTagList();
+                    showTagList();
+                })
+            </script>
+            <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+        </head>
+        <body>
+            <div id="tagscreen" class="screen">
+                <h1>What do you want to talk about?</h1>
+                <ul id="taglist">
+                    <li><a href="#">TAG 1</a></li>
+                    <li class="selected"><a href="#">TAG 2</a></li>
+                </ul>
+                <div id="add">
+                    <input type="text" id="tag" placeholder="Add more..." />
+                </div>
+            </div>
+            <div id="searchscreen" class="screen">
+                <div id="visuals">
+                    <div id="vis1"><img id="visimage" src="https://media.giphy.com/media/lopgyWxwfJp2sutJCq/source.gif" /></div>
+                </div>
+                <div id="locatingoverlay">
+                    <h1>Locating others interested in <span id="currenttag">currenttag</span>...</h1>
+                </div>
+                <div id="matchoverlay">
+                    <h3><span id="matches">999</span> Others match, Find them!</h3>
+                </div>
+                <div id="tagoverlay">
+                    <span id="currenttag3">
+                        TAG
+                    </span>
+                </div>
+                <div class="bottombuttons">
+                    <a id="backtolist">Back</a>
+                </div>
+            </div>
+            <div id="controls">
+                <div class="inner">
+                </div>
+            </div>
+        </body>
+    </html>
